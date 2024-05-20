@@ -41,7 +41,7 @@ def extract():
                         url= None
                     if not os.path.exists("app/opinions"):
                         os.makedirs("app/opinions")
-                    with open(f"opinions/{product_id}.json","w", encoding="UTF-8") as jf:
+                    with open(f"app/opinions/{product_id}.json","w", encoding="UTF-8") as jf:
                         json.dump(all_opinions, jf, indent=4, ensure_ascii=False)
                 return redirect(url_for("product", product_id=product_id))
             return render_template("extract.html", error="Podany produkt nie ma żadnych opinii")
