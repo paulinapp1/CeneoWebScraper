@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
         <h2>Ekstrakcja opinii</h2>
+        {% if error is defined %}
+        <h2>{{error}}</h2>
+        {% endif %}
+     
         <form action="{{url_for('extract')}}" method="post">
                 <label for="product_id">Kod Produktu</label>
                 <input type="text" id="product_id" name="product_id" class="form-control" aria-describedby="idHelpLine" required><br><br>
