@@ -1,4 +1,46 @@
 {% extends 'base.html' %}
 {% block content %}
-        <p>{{products}}</p>
-        {% endblock %}
+<div>
+  <table>
+      <thead>
+          <tr>
+              <th>Product ID</th>
+              <th>Product Name</th>
+              <th>Opinions Count</th>
+              <th>Pros Count</th>
+              <th>Cons Count</th>
+              <th>Average Stars</th>
+              <th>Stars Distribution</th>
+              <th>Recommendations Distribution</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for product in products %}
+              <tr>
+                  <td>{{ product.product_id }}</td>
+                  <td>  <a href="{{url_for('product', product_id=product.product_id)}}">{{ product.product_name }}</a></td>
+                  <td>{{ product.opinions_count }}</td>
+                  <td>{{ product.pros_count }}</td>
+                  <td>{{ product.cons_count }}</td>
+                  <td>{{ product.average_stars }}</td>
+                  <td>
+                      <ul>
+                          {% for key, value in product.stars_distribution.items() %}
+                              <li>{{ key }}: {{ value }}</li>
+                          {% endfor %}
+                      </ul>
+                  </td>
+                  <td>
+                      <ul>
+                          {% for key, value in product.recommendations_distribution.items() %}
+                              <li>{{ key }}: {{ value }}</li>
+                          {% endfor %}
+                        </ul>
+                      </td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+  </div>
+        
+    {% endblock %}
