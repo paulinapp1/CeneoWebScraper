@@ -8,6 +8,8 @@ from . import utils
 import json
 import os
 import io
+import matplotlib.pyplot as plt
+import base64
 
 
 
@@ -19,57 +21,78 @@ def index():
 @app.route('/extract', methods=['POST','GET'])
 def extract():
     if request.method=="POST":
-        product_id=request.form.get('product_id')
+        product_id = request.form.get('product_id')
         url = f"https://www.ceneo.pl/{product_id}"
-        response=requests.get(url)
-        if response.status_code==requests.codes['ok']:
-            page_dom= BeautifulSoup(response.text, "html.parser")
-            opinions_count= utils.extract(page_dom,"a.product-review__link > span")
+        response = requests.get(url)
+        
+        if response.status_code == requests.codes['ok']:
+            page_dom = BeautifulSoup(response.text, "html.parser")
+            opinions_count = utils.extract(page_dom, "a.product-review__link > span")
+            
             if opinions_count:
-                #proces ekstrakcji
-                product_name= utils.extract(page_dom,"h1.product-top__product-info__name")
-                all_opinions=[]
+                product_name = utils.extract(page_dom, "h1.product-top__product-info__name")
+                all_opinions = []
+                
                 while(url):
                     response = requests.get(url)
                     page_dom = BeautifulSoup(response.text, "html.parser")
                     opinions = page_dom.select("div.js_product-review")
+                    
                     for opinion in opinions:
-                        single_opinion= {
+                        single_opinion = {
                             key: utils.extract(opinion, *value)
-                                for key, value in utils.selectors.items()
+                            for key, value in utils.selectors.items()
                         }
                         all_opinions.append(single_opinion)
+                    
                     try:
                         url = "https://www.ceneo.pl/"+page_dom.select_one("a.pagination__next")["href"].strip()
                     except TypeError: 
-                        url= None
-                if not os.path.exists("app/opinions"):
-                    os.makedirs("app/opinions")
-                with open(f"app/opinions/{product_id}.json","w", encoding="UTF-8") as jf:
-                    json.dump(all_opinions, jf, indent=4, ensure_ascii=False)
-                opinions=pd.DataFrame.from_dict(all_opinions)
-                opinions.stars=opinions.stars.apply(lambda s: s.split("/")[0].replace(",",".")).astype(float)
-                opinions.recommendation= opinions.recommendation.apply(lambda r: "Brak rekomendacji" if r is None else r )
-                stats={
-                    "product_id" : product_id,
-                    "product_name" : product_name,
-                    "opinions_count" : opinions.shape[0],
-                    "pros_count" : int(opinions.pros.apply(lambda p: None if not p else p).count()),
-                    "cons_count" : int(opinions.cons.apply(lambda c: None if not c else c).count()),
-                    "average_stars" :opinions.stars.mean(),
-                    "stars_distribution": opinions.stars.value_counts().reindex(list(np.arange(0,5.5,0.5)),fill_value=0).to_dict(),
-                    "recommendations_distribution":opinions.recommendation.value_counts(dropna=False).reindex(["Polecam","Brak rekomendacji", "Nie polecam"], fill_value=0).to_dict(),
+                        url = None
 
-                }
-                if not os.path.exists("app/products"):
-                    os.makedirs("app/products")
-                with open(f"app/products/{product_id}.json","w", encoding="UTF-8") as jf:
-                    json.dump(stats, jf, indent=4, ensure_ascii=False)
+                opinions = pd.DataFrame.from_dict(all_opinions)
+                opinions.stars = opinions.stars.apply(lambda s: s.split("/")[0].replace(",", ".") if s else "0").astype(float)
+                opinions.recommendation = opinions.recommendation.apply(lambda r: "Brak rekomendacji" if r is None else r)
 
-                return redirect(url_for("product", product_id=product_id))
+                stars_distribution = opinions.stars.value_counts().reindex(list(np.arange(0, 5.5, 0.5)), fill_value=0)
+                fig1, ax1 = plt.subplots()
+                stars_distribution.plot.bar(color="lightpink", ax=ax1)
+                ax1.set_title("Histogram częstości gwiazdek w opiniach")
+                ax1.set_xlabel("Liczba gwiazdek")
+                ax1.set_ylabel("Liczba opinii")
+                ax1.set_xticklabels(ax1.get_xticklabels(), rotation=0)
+
+     
+                img1 = io.BytesIO()
+                fig1.savefig(img1, format='png')
+                img1.seek(0)
+                stars_img = base64.b64encode(img1.getvalue()).decode('utf8')
+
+                recommendations_distribution = opinions.recommendation.value_counts(dropna=False).reindex(
+                    ["Polecam", "Brak rekomendacji", "Nie polecam"], fill_value=0
+                )
+                fig2, ax2 = plt.subplots()
+                recommendations_distribution.plot.pie(colors=["lightgreen", "powderblue", "lightpink"], label="", autopct="%1.1f%%", ax=ax2)
+                ax2.set_title("Udział rekomendacji w opiniach")
+
+                img2 = io.BytesIO()
+                fig2.savefig(img2, format='png')
+                img2.seek(0)
+                recommendations_img = base64.b64encode(img2.getvalue()).decode('utf8')
+
+           
+                return render_template("product.html", 
+                                       product_id=product_id, 
+                                       product_name=product_name, 
+                                       stars_img=stars_img,
+                                       recommendations_img=recommendations_img)
+            
             return render_template("extract.html", error="Podany produkt nie ma żadnych opinii")
-        return render_template("extract.html", error="Podany produkt nie istnieje  )")    
+        
+        return render_template("extract.html", error="Podany produkt nie istnieje")    
+
     return render_template("extract.html")
+
 @app.route('/products')
 def products():
     #products_list=[filename.split(".")[0] for filename in os.listdir("app/opinions")]

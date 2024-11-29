@@ -1,4 +1,13 @@
 {% extends 'base.html' %}
+
 {% block content %}
-        <p>To jest strona produktu {{product_id}}</p>
-        {% endblock %}
+    <p>To jest strona produktu {{ product_id }}</p>
+    <h1>Product {{ product_id }}: {{ product_name }}</h1>
+
+    <h2>Star Rating Distribution</h2>
+    <img src="data:image/png;base64,{{ stars_img }}" alt="Star Rating Distribution Chart" style="width: 80%; max-width: 600px;"/>
+
+    <h2>Recommendation Distribution</h2>
+    <img src="data:image/png;base64,{{ recommendations_img }}" alt="Recommendation Distribution Chart" style="width: 80%; max-width: 600px;"/>
+
+{% endblock %}
