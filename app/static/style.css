@@ -227,14 +227,52 @@ td ul li {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  .chart img {
-    width: 100%;
-    max-width: 400px;
-    border-radius: 8px;
-  }
-  .flex-container-chart{
-    display: flex;
-    justify-content: space-between;
-    gap: 20px; 
-    padding: 20px;
-  }
+  .flex-container-chart {
+    display: flex;                    
+    justify-content: center;          
+    gap: 20px;                      
+    padding: 20px;                    
+    flex-wrap: wrap;                  
+}
+
+
+.chart-container {
+    display: flex;                   
+    justify-content: center;         
+    align-items: center;             
+    width: 100%;                     
+    max-width: 400px;                
+}
+
+
+.chart-container .plotly-graph-div,
+.chart-container img {
+    width: 100%;                     
+    height: auto;                    
+    max-width: 400px;              
+    border-radius: 8px;               
+}
+
+.flex-container2 {
+  display: flex;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  justify-content: space-between; /* Rozdziela obiekty równomiernie w poziomie */
+  gap: 20px; /* Odstęp między elementami */
+  padding: 20px; /* Odstęp wewnętrzny dla kontenera */
+  flex-wrap: wrap;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Zapewnia, że w przypadku braku miejsca elementy przejdą do nowej linii */
+}
+
+.object1, .object3, .object4 {
+  flex: 1 1 30%; /* Zapewnia, że każdy obiekt ma co najmniej 30% szerokości */
+  text-align: center; /* Wyśrodkowanie tekstu */
+}
+
+.object1 img, .object3 img, .object4 img {
+  width: 100%; /* Obrazki zajmują pełną szerokość swojego kontenera */
+  max-width: 200px; /* Maksymalna szerokość obrazu */
+  height: auto; /* Wysokość obrazu dostosowuje się proporcjonalnie */
+  margin-bottom: 10px; /* Odstęp między obrazem a tekstem */
+}
+

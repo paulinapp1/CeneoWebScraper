@@ -9,7 +9,8 @@ import json
 import os
 import io
 import matplotlib.pyplot as plt
-import base64
+import plotly.express as px
+import plotly.io as pio
 
 
 from flask_babel import _
@@ -26,7 +27,7 @@ def test():
 
 @app.route('/extract', methods=['POST','GET'])
 def extract():
-    if request.method=="POST":
+    if request.method == "POST":
         product_id = request.form.get('product_id')
         url = f"https://www.ceneo.pl/{product_id}"
         response = requests.get(url)
@@ -39,10 +40,10 @@ def extract():
                 product_name = utils.extract(page_dom, "h1.product-top__product-info__name")
                 all_opinions = []
                 
-                while(url):
+                while url:
                     response = requests.get(url)
                     page_dom = BeautifulSoup(response.text, "html.parser")
-                    opinions = page_dom.select("div.js_product-review")
+                    opinions = page_dom.select("div .js_product-review")
                     
                     for opinion in opinions:
                         single_opinion = {
@@ -52,61 +53,81 @@ def extract():
                         all_opinions.append(single_opinion)
                     
                     try:
-                        url = "https://www.ceneo.pl/"+page_dom.select_one("a.pagination__next")["href"].strip()
-                    except TypeError: 
+                        url = "https://www.ceneo.pl/" + page_dom.select_one("a.pagination__next")["href"].strip()
+                    except TypeError:
                         url = None
-
-                opinions = pd.DataFrame.from_dict(all_opinions)
-                opinions.stars = opinions.stars.apply(lambda s: s.split("/")[0].replace(",", ".") if s else "0").astype(float)
-                opinions.recommendation = opinions.recommendation.apply(lambda r: "Brak rekomendacji" if r is None else r)
-
-                stars_distribution = opinions.stars.value_counts().reindex(list(np.arange(0, 5.5, 0.5)), fill_value=0)
-                fig1, ax1 = plt.subplots()
-                stars_distribution.plot.bar(color="lightpink", ax=ax1)
-                ax1.set_title("Histogram częstości gwiazdek w opiniach")
-                ax1.set_xlabel("Liczba gwiazdek")
-                ax1.set_ylabel("Liczba opinii")
-                ax1.set_xticklabels(ax1.get_xticklabels(), rotation=0)
-
-     
-                img1 = io.BytesIO()
-                fig1.savefig(img1, format='png')
-                img1.seek(0)
-                stars_img = base64.b64encode(img1.getvalue()).decode('utf8')
-
-                recommendations_distribution = opinions.recommendation.value_counts(dropna=False).reindex(
-                    ["Polecam", "Brak rekomendacji", "Nie polecam"], fill_value=0
-                )
-                fig2, ax2 = plt.subplots()
-                recommendations_distribution.plot.pie(colors=["lightgreen", "powderblue", "lightpink"], label="", autopct="%1.1f%%", ax=ax2)
-                ax2.set_title("Udział rekomendacji w opiniach")
-
-                img2 = io.BytesIO()
-                fig2.savefig(img2, format='png')
-                img2.seek(0)
-                recommendations_img = base64.b64encode(img2.getvalue()).decode('utf8')
+                
+         
+                opinions_dir = "app/opinions"
+                if not os.path.exists(opinions_dir):
+                    os.makedirs(opinions_dir)
 
            
+                with open(f"{opinions_dir}/{product_id}.json", "w", encoding="UTF-8") as jf:
+                    json.dump(all_opinions, jf, indent=4, ensure_ascii=False)
+
+
+                stats = {
+                    "product_id": product_id,
+                    "product_name": product_name,
+                    "opinions_count": len(all_opinions),
+                    "average_stars": pd.DataFrame(all_opinions)["stars"].apply(lambda s: float(s.split("/")[0].replace(",", ".")) if isinstance(s, str) else s).mean(),
+                    "stars_distribution": pd.DataFrame(all_opinions)["stars"].apply(lambda s: float(s.split("/")[0].replace(",", ".")) if isinstance(s, str) else s).value_counts().to_dict(),
+                    "recommendations_distribution": pd.DataFrame(all_opinions)["recommendation"].value_counts().to_dict(),
+                }
+
+                products_dir = "app/products"
+                if not os.path.exists(products_dir):
+                    os.makedirs(products_dir)
+                
+                with open(f"{products_dir}/{product_id}.json", "w", encoding="UTF-8") as jf:
+                    json.dump(stats, jf, indent=4, ensure_ascii=False)
+
+    
+                opinions_df = pd.DataFrame(all_opinions)
+                opinions_df['stars'] = opinions_df['stars'].apply(lambda s: float(s.split("/")[0].replace(",", ".")) if isinstance(s, str) else s)
+                opinions_df['stars'] = pd.to_numeric(opinions_df['stars'], errors='coerce')  # Zamiana na NaN w przypadku błędnych danych
+                opinions_df = opinions_df.dropna(subset=['stars']) 
+                stars_distribution = opinions_df['stars'].value_counts().reindex(list(range(0, 6)), fill_value=0)
+                df = pd.DataFrame(stars_distribution).reset_index()
+                df.columns = ['Stars', 'Count']
+                
+                fig = px.bar(df, x='Stars', y='Count', labels={'Stars': 'Liczba gwiazdek', 'Count': 'Liczba opinii'})
+                html_div = pio.to_html(fig, full_html=False)
+
+                recommendations_distribution = opinions_df['recommendation'].value_counts(dropna=False).reindex(
+                    ["Polecam", "Brak rekomendacji", "Nie polecam"], fill_value=0
+                )
+                
+                fig2 = px.pie(recommendations_distribution, names=recommendations_distribution.index, values=recommendations_distribution.values)
+                html_div2 = pio.to_html(fig2, full_html=False)
+
                 return render_template("product.html", 
                                        product_id=product_id, 
                                        product_name=product_name, 
-                                       stars_img=stars_img,
-                                       recommendations_img=recommendations_img)
+                                       stars_chart=html_div,
+                                       recommendations_chart=html_div2)
             
             return render_template("extract.html", error="Podany produkt nie ma żadnych opinii")
         
-        return render_template("extract.html", error="Podany produkt nie istnieje")    
-
+        return render_template("extract.html", error="Podany produkt nie istnieje")
+    
     return render_template("extract.html")
 
 @app.route('/products')
 def products():
-    #products_list=[filename.split(".")[0] for filename in os.listdir("app/opinions")]
-    #products=[]
-    #for product_id in products_list:
-        #with open(f"app/products/{product_id}.json","r", encoding="UTF-8") as jf:
-           # products.append(json.load(jf))
+    if not os.path.isdir("app/opinions"):
+        os.makedirs("app/opinions", exist_ok=True)
+        return render_template('error.html')
+    products_list=[filename.split(".")[0] for filename in os.listdir("app/opinions")]
     products = []
+    for product_id in products_list:
+        try:
+            with open(f"app/products/{product_id}.json","r", encoding="UTF-8") as jf:
+                products.append(json.load(jf))
+        except FileNotFoundError:
+            continue
+    
     for filename in os.listdir('app/products'):
         if filename.endswith('.json'):
             file_path = os.path.join('app/products', filename)

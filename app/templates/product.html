@@ -1,15 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Product {{ product_id }}: {{ product_name }}</h1>
-    <div class="flex-container-chart">
-        <div class="chart">
-          <h2>Star Rating Distribution</h2>
-          <img src="data:image/png;base64,{{ stars_img }}" alt="Star Rating Distribution Chart" />
+<h1>Product {{ product_id }}: {{ product_name }}</h1>
+
+<div class="flex-container-chart">
+    <div class="chart">
+        <h2>Star Rating Distribution</h2>
+        <div class="chart-container">
+            {{ stars_chart | safe }}
         </div>
-        <div class="chart">
-          <h2>Recommendation Distribution</h2>
-          <img src="data:image/png;base64,{{ recommendations_img }}" alt="Recommendation Distribution Chart" />
+    </div>
+
+    <div class="chart">
+        <h2>Recommendation Distribution</h2>
+        <div class="chart-container">
+            {{ recommendations_chart | safe }}
         </div>
-      </div>
+    </div>
+</div>
 {% endblock %}
