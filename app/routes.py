@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, redirect, url_for, send_file
+from flask import render_template, request, redirect, url_for, send_file, session
 import requests 
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -12,11 +12,17 @@ import matplotlib.pyplot as plt
 import base64
 
 
-
+from flask_babel import _
 @app.route('/')
 def index():
+    lang = request.args.get('lang')
+    if lang:
+        session['lang'] = lang
     return render_template("index.html")
 
+@app.route('/test')
+def test():
+    return _('Strona Główna')  # Should return the translated string
 
 @app.route('/extract', methods=['POST','GET'])
 def extract():
@@ -108,9 +114,7 @@ def products():
                 file_data = json.load(jf)
                 products.append(file_data)
     return render_template('products.html', products=products)
-@app.route('/about')
-def about():
-    return render_template("about.html")
+
 @app.route('/product/<product_id>')
 def product(product_id):
     return render_template("product.html",product_id=product_id)

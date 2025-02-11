@@ -1,6 +1,27 @@
 {% extends 'base.html' %}
 {% block content %}
-        <p>To jest strona główna zrobic opis projektu!</p>
+<div class="project-description">
+        <div class="flex-container">
+          <!-- Opis projektu po lewej -->
+          <div class="description">
+            <h2>Ceneo Web Scraper</h2>
+            <p>Ceneo Web Scraper to aplikacja umożliwiająca analizę opinii o produktach z serwisu Ceneo.pl. Użytkownik wprowadza <strong>ID produktu</strong>, a narzędzie pobiera szczegółowe informacje o recenzjach i generuje dwa interaktywne wykresy:</p>
+            <ul>
+              <li><strong>Rozkład ocen (liczba gwiazdek)</strong> – pokazuje, ile opinii przyznano dla każdej oceny (od 1 do 5 gwiazdek).</li>
+              <li><strong>Analiza sentymentu opinii</strong> – przedstawia liczbę pozytywnych, neutralnych i negatywnych recenzji.</li>
+            </ul>
+          </div>
+      
+          <!-- Instrukcja po prawej -->
+          <div class="instructions">
+            <h3>Instrukcja użytkowania</h3>
+            <p>1. Przejdź do <a href="https://www.ceneo.pl/" target="_blank">Ceneo.pl</a> i wybierz interesujące Cię produkty.</p>
+            <p>2. Zapisz numery ID produktów.</p>
+            <p>3. Przejdź do zakładki <strong>„Wyszukaj Opinie”</strong> i wprowadź zapisane ID produktów.</p>
+            <p>4. Aby porównać wszystkie wyszukane produkty, przejdź do <strong>„Lista Produktów”</strong>.</p>
+          </div>
+        </div>
+      </div>
         {% endblock %}
 
  

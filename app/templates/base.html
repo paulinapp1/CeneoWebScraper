@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ g.get('lang') }}"></html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,24 +7,30 @@
     <title>Ceneo Scraper</title>
 </head>
 <body>
-    <header>
-        <h1>Ceneo.pl Scraper</h1>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="{{url_for('index')}}">Strona Główna</a></li>
-                <li><a href="{{url_for('extract')}}">Ekstrakcja opinii</a></li>
-                <li><a href="{{url_for('products')}}">Lista produktów</a></li>
-                <li><a href="{{url_for('about')}}">O Autorze</a></li>
-            </ul>
-        </nav>
-    </header>
+   <nav>
+    <div class="logo">Ceneo Web Scraper</div>
+    <div class="'menu-toggle" id="menu-toggle">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <ul id="nav-menu">
+        <li><a href="{{url_for('index')}}">{{_('Strona Główna')}}</a></li>
+        <li><a href="{{url_for('extract')}}">{{_('Wyszukaj Opinie')}}</a></li>
+        <li><a href="{{url_for('products')}}">{{_('Lista Produktów')}}</a></li>
+        <li><a href="{{ url_for('index', lang='de') }}">Deutsch</a></li>
+        <li><a href="{{ url_for('index', lang='en') }}">English</a></li>
+    </ul>
+   </nav>
     <section>
         {% block content %}
         <p>To jest plik bazowy</p>
         {% endblock %}
     </section>
-    <footer>
-        <p>Paulina Grabska, Uniwersytet Ekonomiczny w Krakowie</p>
-    </footer>
 </body>
+<script>
+    const menuToggle= document.getElementById('menu-toggle');
+    const navMenu= document.getElementById('nav-menu');
+    menuToggle.addEventListener('click', ()=>{navMenu.classList.toggle('active')});
+</script>
 </html>
