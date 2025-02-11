@@ -4,18 +4,18 @@
 <h1>Product {{ product_id }}: {{ product_name }}</h1>
 
 <div class="flex-container-chart">
-    <div class="chart">
-        <h2>Star Rating Distribution</h2>
-        <div class="chart-container">
-            {{ stars_chart | safe }}
-        </div>
+  <div class="chart">
+    <h2>Star Distribution</h2>
+    <div class="chart-container">
+        <iframe src="{{ url_for('static', filename='charts/' + product_id + '/stars_chart.html') }}" width="4000" height="450"></iframe>
     </div>
+  </div>
 
-    <div class="chart">
-        <h2>Recommendation Distribution</h2>
-        <div class="chart-container">
-            {{ recommendations_chart | safe }}
-        </div>
+  <div class="chart">
+    <h2>Opinions distribution</h2>
+    <div class="chart-container">
+        <iframe src="{{ url_for('static', filename='charts/' + product_id + '/recommendations_chart.html') }}" width="4000" height="450"></iframe>
     </div>
+  </div>
 </div>
 {% endblock %}

@@ -8,7 +8,7 @@ body {
 }
 
 nav {
-    background-color: #ca8537;
+    background-color: #f5933c;
     color: #fff;
     padding: 0.5rem 1rem;
     display: flex;
@@ -35,32 +35,9 @@ nav ul {
     transition: color 0.3s;
   }
   nav ul li a:hover {
-    color: #00bcd4;
+    color: black;
   }
-  .menu-toggle {
-    display: none;
-    flex-direction: column;
-    cursor: pointer;
-  }
-  .menu-toggle div {
-    width: 25px;
-    height: 3px;
-    background-color: white;
-    margin: 3px 0;
-  }
-  @media (max-width: 768px) {
-    nav ul {
-      display: none;
-      flex-direction: column;
-      width: 100%;
-    }
-    nav ul.active {
-      display: flex;
-    }
-    .menu-toggle {
-      display: flex;
-    }
-  }
+ 
 
 
 .content {
@@ -83,9 +60,18 @@ table {
     margin-top: 20px;
 }
 
-
+ input[type="submit"]{
+  background-color: #f5933c;
+  color: #fff;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+ }
 thead th {
-    background-color: #ca8537;
+    background-color: #f5933c;
     color: white;
     padding: 10px;
     text-align: left;
@@ -199,7 +185,7 @@ td ul li {
   }
 
   button {
-    background-color: #cc7722;
+    background-color: #f5933c;
     color: #fff;
     padding: 12px 20px;
     font-size: 16px;

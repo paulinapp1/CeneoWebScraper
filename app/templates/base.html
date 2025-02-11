@@ -15,11 +15,9 @@
         <div></div>
     </div>
     <ul id="nav-menu">
-        <li><a href="{{url_for('index')}}">{{_('Strona Główna')}}</a></li>
-        <li><a href="{{url_for('extract')}}">{{_('Wyszukaj Opinie')}}</a></li>
-        <li><a href="{{url_for('products')}}">{{_('Lista Produktów')}}</a></li>
-        <li><a href="{{ url_for('index', lang='de') }}">Deutsch</a></li>
-        <li><a href="{{ url_for('index', lang='en') }}">English</a></li>
+        <li><a href="{{url_for('index')}}">Home Page</a></li>
+        <li><a href="{{url_for('extract')}}">Search Opinions</a></li>
+        <li><a href="{{url_for('products')}}">List of Products</a></li>
     </ul>
    </nav>
     <section>
@@ -28,9 +26,5 @@
         {% endblock %}
     </section>
 </body>
-<script>
-    const menuToggle= document.getElementById('menu-toggle');
-    const navMenu= document.getElementById('nav-menu');
-    menuToggle.addEventListener('click', ()=>{navMenu.classList.toggle('active')});
-</script>
+
 </html>

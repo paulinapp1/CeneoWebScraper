@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
-        <h2>Wyszukiwanie Opinii</h2>
-        {% if error is defined %}
-        <h2>{{error}}</h2>
-        {% endif %}
-        <div class="'extract-form">
-        <form action="{{url_for('extract')}}" method="post">
-                <label for="product_id">Kod Produktu</label>
-                <input type="text" id="product_id" name="product_id" class="form-control" aria-describedby="idHelpLine" required><br><br>
-                <input type="submit" value="Pobierz opinie">
-                <span id="idHelpline" class="form-text"> Kod produktu składa się z 8-10 cyfr </span>
-                </form>
-        </div>
-        {% endblock %}
+  <h2>Opinion search</h2>
+  
+  {% if error is defined %}
+    <h2>{{ error }}</h2>
+  {% endif %}
+
+  <div class="extract-form">
+    <form action="{{ url_for('extract') }}" method="post">
+      <label for="product_id">Product ID</label>
+      <input type="text" id="product_id" name="product_id" class="form-control" aria-describedby="idHelpLine" required><br><br>
+      <input type="submit" value="Pobierz opinie">
+      <span id="idHelpline" class="form-text">Product ID consists of 8-10 digits</span>
+    </form>
+  </div>
+{% endblock %}

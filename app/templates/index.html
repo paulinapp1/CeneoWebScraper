@@ -1,44 +1,57 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="project-description">
-        <div class="flex-container">
-          <!-- Opis projektu po lewej -->
-          <div class="description">
-            <h2>Ceneo Web Scraper</h2>
-            <p>Ceneo Web Scraper to aplikacja umożliwiająca analizę opinii o produktach z serwisu Ceneo.pl. Użytkownik wprowadza <strong>ID produktu</strong>, a narzędzie pobiera szczegółowe informacje o recenzjach i generuje dwa interaktywne wykresy:</p>
-            <ul>
-              <li><strong>Rozkład ocen (liczba gwiazdek)</strong> – pokazuje, ile opinii przyznano dla każdej oceny (od 1 do 5 gwiazdek).</li>
-              <li><strong>Analiza sentymentu opinii</strong> – przedstawia liczbę pozytywnych, neutralnych i negatywnych recenzji.</li>
-            </ul>
-          </div>
-      
-          <!-- Instrukcja po prawej -->
-          <div class="instructions">
-            <h3>Instrukcja użytkowania</h3>
-            <p>1. Przejdź do <a href="https://www.ceneo.pl/" target="_blank">Ceneo.pl</a> i wybierz interesujące Cię produkty.</p>
-            <p>2. Zapisz numery ID produktów.</p>
-            <p>3. Przejdź do zakładki <strong>„Wyszukaj Opinie”</strong> i wprowadź zapisane ID produktów.</p>
-            <p>4. Aby porównać wszystkie wyszukane produkty, przejdź do <strong>„Lista Produktów”</strong>.</p>
-          </div>
-        </div>
-      </div>
-      <div>
-        <h2>Przykładowe produkty wraz z numerami do porównania </h2>
-      </div>
-      <div class="flex-container2">
-        <div class="object1">
-        <p>Samsung Galaxy A25 5G <strong>Kod Produktu: 157123293</strong></p>
-        <img src="https://image.ceneostatic.pl/data/products/162623922/i-samsung-galaxy-a25-5g-sm-a256-8-256gb-zolty.jpg" alt="iphone zdjecie">
-        </div>
-        <div class="object3">
-        <p>Samsung Galaxy A55 128 Gb <strong>Kod Produktu: 165423702</strong></p>
-        <img src="https://image.ceneostatic.pl/data/products/165423702/i-samsung-galaxy-a55-sm-a5560-5g-8-128gb-czarny.jpg" alt="samsung zdjecie">
-        </div>
-        <div class="object4">
-        <p>Samsung Galaxy S24 Ultra 256 Gb <strong>Kod Produktu: 163003681</strong></p>
-        <img src="https://image.ceneostatic.pl/data/products/163003681/i-samsung-galaxy-s24-ultra-sm-s928-12-256gb-czarny.jpg" alt="samsung 2 zdjecie">
-        </div>
-      </div>
-        {% endblock %}
+  <div class="flex-container">
 
- 
+    <div class="description">
+      <h2>Ceneo Web Scraper</h2>
+      <p>Ceneo Web Scraper is an application that allows the analysis of product reviews from the Ceneo.pl website. The user enters the <strong>Product ID</strong>, and the tool retrieves detailed review information and generates two interactive charts:</p>
+      <ul>
+        <li><strong>Rating Distribution (number of stars)</strong> – shows how many reviews were given for each rating (from 1 to 5 stars).</li>
+        <li><strong>Sentiment Analysis of Reviews</strong> – shows the number of positive, neutral, and negative reviews.</li>
+      </ul>
+    </div>
+
+    <div class="instructions">
+      <h3>How to Use</h3>
+      <p>1. Go to <a href="https://www.ceneo.pl/" target="_blank">Ceneo.pl</a> and select the products you are interested in.</p>
+      <p>2. Save the product IDs.</p>
+      <p>3. Go to the <strong>"Search Reviews"</strong> tab and enter the saved product IDs.</p>
+      <p>4. To compare all searched products, go to the <strong>"Product List"</strong> tab.</p>
+    </div>
+  </div>
+</div>
+
+<div>
+  <h2>Example Products with ID Numbers for Comparison</h2>
+</div>
+
+<div class="flex-container2">
+  <div class="object1">
+    <h3>Samsung Galaxy A25 5G</h3>
+    <form action="{{ url_for('extract') }}" method="post">
+      <input type="hidden" name="product_id" value="157123293">
+      <button type="submit"><strong>Product Code: 157123293</strong></button>
+    </form>
+    <img src="https://image.ceneostatic.pl/data/products/162623922/i-samsung-galaxy-a25-5g-sm-a256-8-256gb-zolty.jpg" alt="iPhone image">
+  </div>  
+
+  <div class="object3">
+    <h3>Samsung Galaxy A55 128 GB</h3>
+    <form action="{{ url_for('extract') }}" method="post">
+      <input type="hidden" name="product_id" value="165423702">
+      <button type="submit"><strong>Product Code: 165423702</strong></button>
+    </form>
+    <img src="https://image.ceneostatic.pl/data/products/165423702/i-samsung-galaxy-a55-sm-a5560-5g-8-128gb-czarny.jpg" alt="Samsung image">
+  </div>
+
+  <div class="object4">
+    <h3>Samsung Galaxy S24 Ultra 256 GB</h3>
+    <form action="{{ url_for('extract') }}" method="post">
+      <input type="hidden" name="product_id" value="163003681">
+      <button type="submit"><strong>Product Code: 163003681</strong></button>
+    </form>
+    <img src="https://image.ceneostatic.pl/data/products/163003681/i-samsung-galaxy-s24-ultra-sm-s928-12-256gb-czarny.jpg" alt="Samsung second image">
+  </div>
+</div>
+{% endblock %}
