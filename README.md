@@ -9,7 +9,7 @@ Ceneo Web Scraper is an application that analyzes product reviews from the Ceneo
 ### 2. Activate Virtual Environment
  Windows
 
-     source .venv\Scripts\activate
+     source .venv/Scripts/activate
 
 Linux/Mac
 
