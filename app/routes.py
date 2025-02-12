@@ -108,7 +108,8 @@ def products():
                 products.append(json.load(jf))
         except FileNotFoundError:
             continue
-    
+    if not os.path.isdir("app/static/products"):
+        return render_template('error.html')
     for filename in os.listdir('app/static/products'):
         if filename.endswith('.json'):
             file_path = os.path.join('app/static/products', filename)
